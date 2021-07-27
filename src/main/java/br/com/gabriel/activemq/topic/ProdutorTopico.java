@@ -27,6 +27,7 @@ public class ProdutorTopico {
         for(int i = 0; i < 1000; i ++) {
             System.out.println(i);
             Message message = session.createTextMessage("<pedido><id>" + i + "</id></pedido>");
+            message.setBooleanProperty("ebook", (i % 2) == 0);
             producer.send(message);
         }
 
