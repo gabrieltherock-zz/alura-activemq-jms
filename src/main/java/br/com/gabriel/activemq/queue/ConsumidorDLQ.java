@@ -1,18 +1,14 @@
-package br.com.gabriel.activemq.topic;
-
-import br.com.gabriel.activemq.modelo.Pedido;
-import br.com.gabriel.activemq.modelo.PedidoFactory;
+package br.com.gabriel.activemq.queue;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
+import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.naming.InitialContext;
 import java.util.Scanner;
 
-public class ProdutorTopico {
+public class ConsumidorDLQ {
 
     public static void main(String[] args) throws Exception {
         InitialContext context = new InitialContext();
@@ -22,16 +18,11 @@ public class ProdutorTopico {
         connection.start();
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Destination fila = (Destination) context.lookup("DLQ");
 
-        Destination topico = (Destination) context.lookup("loja");
+        MessageConsumer consumer = session.createConsumer(fila);
 
-        MessageProducer producer = session.createProducer(topico);
-
-        Pedido pedido = new PedidoFactory().geraPedidoComValores();
-
-        Message message = session.createObjectMessage(pedido);
-        message.setBooleanProperty("ebook", false);
-        producer.send(message);
+        consumer.setMessageListener(System.out::println);
 
         new Scanner(System.in).next();
 

@@ -1,9 +1,12 @@
 package br.com.gabriel.activemq.topic;
 
+import br.com.gabriel.activemq.modelo.Pedido;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
@@ -13,6 +16,7 @@ import java.util.Scanner;
 public class ConsumidorTopicoComercial {
 
     public static void main(String[] args) throws Exception {
+        System.setProperty("org.apache.activemq.SERIALIZABLE_PACKAGES","*");
         InitialContext context = new InitialContext();
 
         ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
@@ -28,9 +32,10 @@ public class ConsumidorTopicoComercial {
         MessageConsumer consumer = session.createDurableSubscriber(topico, "assinatura");
 
         consumer.setMessageListener(message -> {
-            TextMessage textMessage  = (TextMessage) message;
+            ObjectMessage objectMessage  = (ObjectMessage) message;
             try {
-                System.out.println(textMessage.getText());
+                Pedido pedido = (Pedido) objectMessage.getObject();
+                System.out.println(pedido.getCodigo());
             } catch (JMSException e) {
                 e.printStackTrace();
             }
