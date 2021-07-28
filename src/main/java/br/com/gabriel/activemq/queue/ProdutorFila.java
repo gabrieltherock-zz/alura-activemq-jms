@@ -23,11 +23,14 @@ public class ProdutorFila {
 
         MessageProducer producer = session.createProducer(fila);
 
-        for(int i = 0; i < 1000; i ++) {
-            System.out.println(i);
-            Message message = session.createTextMessage("<pedido><id>" + i + "</id></pedido>");
-            producer.send(message);
-        }
+//        for(int i = 0; i < 1000; i ++) {
+//            System.out.println(i);
+//            Message message = session.createTextMessage("<pedido><id>" + i + "</id></pedido>");
+//            producer.send(message);
+//        }
+
+        Message message = session.createTextMessage("<pedido><id>" + 1111 + "</id></pedido>");
+        producer.send(message);
 
         new Scanner(System.in).next();
 

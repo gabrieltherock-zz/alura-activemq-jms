@@ -22,7 +22,9 @@ public class ConsumidorFila {
         Connection connection = factory.createConnection();
         connection.start();
 
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        //true ou false para comportamento transacional (com commit, rollback, parecido com banco de dados
+        //Session.tipo de confirmacao da mensagem
+        Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
         Destination fila = (Destination) context.lookup("financeiro");
 
         MessageConsumer consumer = session.createConsumer(fila);
@@ -30,6 +32,8 @@ public class ConsumidorFila {
         consumer.setMessageListener(message -> {
             TextMessage textMessage  = (TextMessage) message;
             try {
+//                message.acknowledge();
+                session.commit();
                 System.out.println(textMessage.getText());
             } catch (JMSException e) {
                 e.printStackTrace();
